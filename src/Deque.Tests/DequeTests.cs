@@ -11,9 +11,20 @@ namespace Deque.Tests
     public class DequeTests
     {
 
+        Deque<int> d;
+        Queue<int> q;
+        Stack<int> s;
+        List<int> l;
+        LinkedList<int> ll;
+
         [TestFixtureSetUp]
         public void SetUp()
         {
+            d = new Deque<int>();
+            q = new Queue<int>();
+            s = new Stack<int>();
+            l = new List<int>();
+            ll = new LinkedList<int>();
         }
 
         [Test]
