@@ -482,7 +482,7 @@ namespace Deque
 
         public void InsertRange(int index, IEnumerable<T> collection, int fromIndex, int count)
         {
-            checkIndexOutOfRange(index + 1);
+            checkIndexOutOfRange(index - 1);
 
             if (0 == count)
             {

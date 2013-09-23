@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Deque</id>
+    <version>0.0.0</version>
+    <title>Deque</title>
+    <authors>Tom Jacques</authors>
+    <owners>Tom Jacques</owners>
+    <licenseUrl>https://github.com/tejacques/Deque/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/tejacques/Deque/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+        Binaries for the Deque library.
+        Visit https://github.com/tejacques/Deque for an overview and usage examples.
+    </description>
+    <summary>
+        An open source helper library for generic Deques.
+    </summary>
+    <releaseNotes>
+
+        Version 0.0.0:
+         - Basic structure and support. Not fully documented or tested
+    </releaseNotes>
+    <dependencies>
+    </dependencies>
+    <copyright>Copyright 2013</copyright>
+    <tags>Deque Push Pop Stack Queue</tags>
+  </metadata>
+  <files>
+    <file src="..\..\lib\*.*" target="lib\Net35" />
+    <file src="..\..\src\Trove\*.cs" target="src\Deque" />
+  </files>
+</package>
