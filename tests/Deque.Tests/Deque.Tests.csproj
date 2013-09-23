@@ -52,7 +52,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Deque\Deque.csproj">
+    <ProjectReference Include="..\..\src\Deque\Deque.csproj">
       <Project>{709adc4d-6a3a-4e91-b008-1cdc0b2db060}</Project>
       <Name>Deque</Name>
     </ProjectReference>

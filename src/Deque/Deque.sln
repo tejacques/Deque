@@ -3,14 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deque", "Deque.csproj", "{709ADC4D-6A3A-4E91-B008-1CDC0B2DB060}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deque.Tests", "..\Deque.Tests\Deque.Tests.csproj", "{7A7BFB5A-8C30-44F0-B895-3259C5B3D766}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{110A0B71-590D-4A2A-82F4-CF9F8BC5DF9B}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deque.Tests", "..\..\tests\Deque.Tests\Deque.Tests.csproj", "{7A7BFB5A-8C30-44F0-B895-3259C5B3D766}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
