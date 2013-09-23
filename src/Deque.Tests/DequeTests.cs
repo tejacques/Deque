@@ -41,7 +41,62 @@ namespace Deque.Tests
         {
             Deque<int> deque = new Deque<int>();
 
-            deque.Add(1);
+            Assert.IsTrue(deque.IsEmpty);
+
+            int item = 1;
+
+            Assert.IsFalse(deque.Contains(item));
+            deque.Add(item);
+
+            int actualBack;
+            actualBack = deque[0];
+
+            Assert.IsTrue(deque.Contains(item));
+            Assert.AreEqual(item, actualBack);
+
+            int itemNewBack = 2;
+            Assert.IsFalse(deque.Contains(itemNewBack));
+            deque.AddBack(itemNewBack);
+
+            Assert.IsTrue(deque.Contains(itemNewBack));
+            actualBack = deque[1];
+            Assert.AreEqual(itemNewBack, actualBack);
+
+            actualBack = deque.RemoveBack();
+            Assert.AreEqual(itemNewBack, actualBack);
+
+            int itemNewFront = -1;
+            Assert.IsFalse(deque.Contains(itemNewFront));
+            deque.AddFront(itemNewFront);
+
+            int actualFront;
+            Assert.IsTrue(deque.Contains(itemNewFront));
+
+            actualFront = deque[0];
+            Assert.AreEqual(itemNewFront, actualFront);
+
+            actualFront = deque.RemoveFront();
+            Assert.AreEqual(itemNewFront, actualFront);
+
+            int[] itemRange = new[] { 3, 4, 5, 6 };
+            int offset = deque.Count;
+            deque.AddRange(itemRange);
+
+            foreach (var itm in itemRange)
+            {
+                Assert.AreEqual(itm, deque[offset]);
+                offset++;
+            }
+        }
+
+        [Test]
+        public void TestBulkAdd()
+        {
+            Deque<int> deque = new Deque<int>();
+            for (int i = 0; i < 1000000; i++)
+            {
+                deque.Add(i);
+            }
         }
     }
 }

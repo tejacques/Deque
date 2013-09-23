@@ -48,6 +48,9 @@ namespace Deque
             capacity = Utility.ClosestPowerOfTwoGreaterThan(capacity);
 
             buffer = new T[capacity];
+            this.startOffset = 0;
+            this.endOffset = 0;
+            this.shiftEndOffset(-1);
         }
 
         /// <summary>
@@ -57,7 +60,7 @@ namespace Deque
         public Deque(IEnumerable<T> collection)
             : this(collection.Count())
         {
-            InsertAll(0, collection);
+            InsertRange(0, collection);
         }
 
         /// <summary>
@@ -156,7 +159,12 @@ namespace Deque
 
         private int shiftStartOffset(int value)
         {
-            return (this.startOffset + value) % this.Capacity;
+            this.startOffset = (this.startOffset + value) % this.Capacity;
+            if (this.startOffset < 0)
+            {
+                this.startOffset += this.Capacity;
+            }
+            return this.startOffset;
         }
 
         private int preShiftStartOffset(int value)
@@ -173,12 +181,17 @@ namespace Deque
 
         private int shiftEndOffset(int value)
         {
-            return (this.endOffset + value) % this.Capacity;
+            this.endOffset = (this.endOffset + value) % this.Capacity;
+            if (this.endOffset < 0)
+            {
+                this.endOffset += this.Capacity;
+            }
+            return this.endOffset;
         }
 
         private int preShiftEndOffset(int value)
         {
-            int offset = this.startOffset;
+            int offset = this.endOffset;
             this.shiftEndOffset(value);
             return offset;
         }
@@ -384,7 +397,7 @@ namespace Deque
                 return;
             }
 
-            InsertAll(index, new[] { item });
+            InsertRange(index, new[] { item });
         }
 
         /// <summary>
@@ -446,7 +459,7 @@ namespace Deque
         public void AddBack(T item)
         {
             ensureCapacityFor(1);
-            buffer[preShiftEndOffset(1)] = item;
+            buffer[postShiftEndOffset(1)] = item;
             Count++;
         }
 
@@ -474,7 +487,32 @@ namespace Deque
             return result;
         }
 
-        public void InsertAll(int index, IEnumerable<T> collection)
+        public void AddRange(IEnumerable<T> collection)
+        {
+            AddBackRange(collection);
+        }
+
+        public void AddFrontRange(IEnumerable<T> collection)
+        {
+            InsertRange(0, collection);
+        }
+
+        public void AddFrontRange(IEnumerable<T> collection, int fromIndex, int count)
+        {
+            InsertRange(0, collection, fromIndex, count);
+        }
+
+        public void AddBackRange(IEnumerable<T> collection)
+        {
+            InsertRange(this.Count, collection);
+        }
+
+        public void AddBackRange(IEnumerable<T> collection, int fromIndex, int count)
+        {
+            InsertRange(this.Count, collection, fromIndex, count);
+        }
+
+        public void InsertRange(int index, IEnumerable<T> collection)
         {
             int count = collection.Count();
             this.InsertRange(index, collection, 0, count);
