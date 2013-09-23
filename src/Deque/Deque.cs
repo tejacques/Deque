@@ -7,6 +7,14 @@ using System.Text;
 
 namespace System.Collections.Generic
 {
+    /// <summary>
+    /// A genetic Deque class. It can be thought of as
+    /// a combination of both a Stack and a Queue, having
+    /// an O(1) AddFront, AddBack, RemoveFront, RemoveBack.
+    /// The Deque also has O(1) indexed lookup, as it is backed
+    /// by a circular array.
+    /// </summary>
+    /// <typeparam name="T">The type of objects to store in the deque.</typeparam>
     public class Deque<T> : IList<T>
     {
 
@@ -108,6 +116,9 @@ namespace System.Collections.Generic
             get { return this.Count == this.Capacity; }
         }
 
+        /// <summary>
+        /// Gets whether or not the Deque is empty.
+        /// </summary>
         public bool IsEmpty
         {
             get { return 0 == this.Count; }
@@ -203,6 +214,11 @@ namespace System.Collections.Generic
         }
 
         #region IEnumberable
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the Deque.
+        /// </summary>
+        /// <returns>An iterator that can be used to iterate through the Deque.</returns>
         public IEnumerator<T> GetEnumerator()
         {
             int count = this.Count;
@@ -225,6 +241,10 @@ namespace System.Collections.Generic
             }
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through the Deque.
+        /// </summary>
+        /// <returns>An iterator that can be used to iterate through the Deque.</returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
@@ -450,6 +470,10 @@ namespace System.Collections.Generic
         }
         #endregion
 
+        /// <summary>
+        /// Adds the provided item to the front of the Deque.
+        /// </summary>
+        /// <param name="item">The item to add.</param>
         public void AddFront(T item)
         {
             ensureCapacityFor(1);
@@ -457,6 +481,10 @@ namespace System.Collections.Generic
             Count++;
         }
 
+        /// <summary>
+        /// Adds the provided item to the back of the Deque.
+        /// </summary>
+        /// <param name="item">The item to add.</param>
         public void AddBack(T item)
         {
             ensureCapacityFor(1);
@@ -464,6 +492,10 @@ namespace System.Collections.Generic
             Count++;
         }
 
+        /// <summary>
+        /// Removes an item from the front of the Deque and returns it.
+        /// </summary>
+        /// <returns>The item at the front of the Deque.</returns>
         public T RemoveFront()
         {
             if (this.IsEmpty)
@@ -476,6 +508,10 @@ namespace System.Collections.Generic
             return result;
         }
 
+        /// <summary>
+        /// Removes an item from the back of the Deque and returns it.
+        /// </summary>
+        /// <returns></returns>
         public T RemoveBack()
         {
             if (this.IsEmpty)
@@ -488,37 +524,73 @@ namespace System.Collections.Generic
             return result;
         }
 
+        /// <summary>
+        /// Adds a collection of items to the Deque.
+        /// </summary>
+        /// <param name="collection">The collection to add.</param>
         public void AddRange(IEnumerable<T> collection)
         {
             AddBackRange(collection);
         }
 
+        /// <summary>
+        /// Adds a collection of items to the front of the Deque.
+        /// </summary>
+        /// <param name="collection">The collection to add.</param>
         public void AddFrontRange(IEnumerable<T> collection)
         {
             InsertRange(0, collection);
         }
 
+        /// <summary>
+        /// Adds count items from a collection of items from a specified index to the Deque.
+        /// </summary>
+        /// <param name="collection">The collection to add.</param>
+        /// <param name="fromIndex">The index in the collection to begin adding from.</param>
+        /// <param name="count">The number of items in the collection to add.</param>
         public void AddFrontRange(IEnumerable<T> collection, int fromIndex, int count)
         {
             InsertRange(0, collection, fromIndex, count);
         }
 
+        /// <summary>
+        /// Adds a collection of items to the back of the Deque.
+        /// </summary>
+        /// <param name="collection">The collection to add.</param>
         public void AddBackRange(IEnumerable<T> collection)
         {
             InsertRange(this.Count, collection);
         }
 
+        /// <summary>
+        /// Adds count items from a collection of items from a specified index to the back of the Deque.
+        /// </summary>
+        /// <param name="collection">The collection to add.</param>
+        /// <param name="fromIndex">The index in the collection to begin adding from.</param>
+        /// <param name="count">The number of items in the collection to add.</param>
         public void AddBackRange(IEnumerable<T> collection, int fromIndex, int count)
         {
             InsertRange(this.Count, collection, fromIndex, count);
         }
 
+        /// <summary>
+        /// Inserts a collection of items into the Deque at the specified index.
+        /// </summary>
+        /// <param name="index">The index in the Deque to insert the collection.</param>
+        /// <param name="collection">The collection to add.</param>
         public void InsertRange(int index, IEnumerable<T> collection)
         {
             int count = collection.Count();
             this.InsertRange(index, collection, 0, count);
         }
 
+        /// <summary>
+        /// Inserts count items from a collection of items from a specified index into the Deque at the specified index.
+        /// </summary>
+        /// <param name="index">The index in the Deque to insert the collection.</param>
+        /// <param name="collection">The collection to add.</param>
+        /// <param name="fromIndex">The index in the collection to begin adding from.</param>
+        /// <param name="count">The number of items in the colleciton to add.</param>
         public void InsertRange(int index, IEnumerable<T> collection, int fromIndex, int count)
         {
             checkIndexOutOfRange(index - 1);
@@ -659,12 +731,22 @@ namespace System.Collections.Generic
             Count -= count;
         }
 
+        /// <summary>
+        /// Gets the value at the specified index of the Deque
+        /// </summary>
+        /// <param name="index">The index of the Deque.</param>
+        /// <returns></returns>
         public T Get(int index)
         {
             checkIndexOutOfRange(index);
             return buffer[toBufferIndex(index)];
         }
 
+        /// <summary>
+        /// Sets the value at the specified index of the Deque to the given item.
+        /// </summary>
+        /// <param name="index">The index of the deque to set the item.</param>
+        /// <param name="item">The item to set at the specified index.</param>
         public void Set(int index, T item)
         {
             checkIndexOutOfRange(index);
