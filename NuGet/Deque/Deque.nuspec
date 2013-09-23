@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Deque</id>
-    <version>0.0.0</version>
+    <version>0.0.1</version>
     <title>Deque</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
@@ -17,6 +17,10 @@
         An open source helper library for generic Deques.
     </summary>
     <releaseNotes>
+        Release Notes:
+
+        Version 0.0.1:
+         - A lot of bug fixes, added some basic test cases. Still not fully documented/tested. Use at your own risk.
 
         Version 0.0.0:
          - Basic structure and support. Not fully documented or tested
