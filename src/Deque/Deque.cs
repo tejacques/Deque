@@ -1,10 +1,11 @@
-﻿using System;
+﻿using DequeUtility;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Deque
+namespace System.Collections.Generic
 {
     public class Deque<T> : IList<T>
     {
@@ -597,7 +598,7 @@ namespace Deque
         ///     The number of elements in the range. This must be greater
         ///     than 0 and less than or equal to <see cref="Count"/>.
         /// </param>
-        private void RemoveRange(int index, int count)
+        public void RemoveRange(int index, int count)
         {
             if (this.IsEmpty)
             {
