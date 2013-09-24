@@ -103,10 +103,18 @@ namespace Deque.Tests
         [Test]
         public void TestBulkAdd()
         {
+            int loops = 1000000;
             Deque<int> deque = new Deque<int>();
-            for (int i = 0; i < 1000000; i++)
+            for (int i = 0; i < loops; i++)
             {
                 deque.Add(i);
+            }
+
+            for (int expected = 0; expected < loops; expected++)
+            {
+                int actual = deque.RemoveFront();
+
+                Assert.AreEqual(expected, actual);
             }
         }
     }
