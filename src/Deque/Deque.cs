@@ -136,7 +136,7 @@ namespace System.Collections.Generic
 
         private int toBufferIndex(int index)
         {
-            return (index + startOffset) % Capacity;
+            return (index + startOffset) & (Capacity-1);
         }
 
         private void checkIndexOutOfRange(int index)
@@ -172,7 +172,7 @@ namespace System.Collections.Generic
 
         private int shiftStartOffset(int value)
         {
-            this.startOffset = (this.startOffset + value) % this.Capacity;
+            this.startOffset = (this.startOffset + value) & (this.Capacity-1);
             while (this.startOffset < 0)
             {
                 this.startOffset += this.Capacity;
@@ -194,7 +194,7 @@ namespace System.Collections.Generic
 
         private int shiftEndOffset(int value)
         {
-            this.endOffset = (this.endOffset + value) % this.Capacity;
+            this.endOffset = (this.endOffset + value) & (this.Capacity-1);
             while (this.endOffset < 0)
             {
                 this.endOffset += this.Capacity;
@@ -230,8 +230,15 @@ namespace System.Collections.Generic
 
             if (startOffset > endOffset)
             {
-                int lengthFromStart = Capacity - startOffset;
-                int lengthFromEnd = count - lengthFromStart;    
+                for (int i = startOffset; i < Capacity; i++)
+                {
+                    yield return buffer[i];
+                }
+
+                for (int i = 0; i < endOffset; i++)
+                {
+                    yield return buffer[i];
+                }
             }
             else
             {
