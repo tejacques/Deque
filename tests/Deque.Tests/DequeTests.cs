@@ -105,10 +105,12 @@ namespace Deque.Tests
         {
             int loops = 1000000;
             Deque<int> deque = new Deque<int>();
-            for (int i = 0; i < loops; i++)
+            for (int i = 1; i < loops; i++)
             {
                 deque.Add(i);
             }
+
+            deque.AddFront(0);
 
             Deque<int> dequeCopy = new Deque<int>(deque);
 
@@ -117,8 +119,8 @@ namespace Deque.Tests
                 int actual = deque.RemoveFront();
                 int actualCopy = dequeCopy[expected];
 
-                Assert.AreEqual(expected, actual);
-                Assert.AreEqual(expected, actualCopy);
+                Assert.AreEqual(expected, actual, "Original deque item differs from expected value");
+                Assert.AreEqual(expected, actualCopy, "Copied deque item differs from expected value");
             }
 
         }

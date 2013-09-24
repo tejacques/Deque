@@ -61,7 +61,6 @@ namespace System.Collections.Generic
             this.capacityMinusOne = capacity - 1;
             this.startOffset = 0;
             this.endOffset = 0;
-            this.shiftEndOffset(-1);
         }
 
         /// <summary>
@@ -109,7 +108,7 @@ namespace System.Collections.Generic
                 // Set up to use the new buffer.
                 buffer = newBuffer;
                 startOffset = 0;
-                endOffset = Count - 1;
+                endOffset = Count;
                 capacityMinusOne = buffer.Length - 1;
             }
         }
@@ -493,7 +492,7 @@ namespace System.Collections.Generic
         public void AddBack(T item)
         {
             ensureCapacityFor(1);
-            buffer[postShiftEndOffset(1)] = item;
+            buffer[preShiftEndOffset(1)] = item;
             Count++;
         }
 
@@ -524,7 +523,7 @@ namespace System.Collections.Generic
                 throw new InvalidOperationException("The Deque is empty");
             }
 
-            T result = buffer[preShiftEndOffset(-1)];
+            T result = buffer[postShiftEndOffset(-1)];
             Count--;
             return result;
         }
@@ -607,8 +606,6 @@ namespace System.Collections.Generic
 
             // Make room
             ensureCapacityFor(count);
-
-            int bufferIndex = toBufferIndex(index);
 
             if (index < Count / 2)
             {
