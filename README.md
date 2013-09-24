@@ -37,5 +37,5 @@ public Class Deque<T> : IList<T>
     public void Set(int index, T item);
     
     public T this[index];
-  }
+}
 ```
