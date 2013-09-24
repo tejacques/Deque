@@ -37,16 +37,6 @@ namespace Deque.Tests
         }
 
         [Test]
-        public void TestPerformanceDequeAddFront()
-        {
-            d = new Deque<int>(loops);
-            for (int i = 0; i < loops; i++)
-            {
-                d.AddFront(i);
-            }
-        }
-
-        [Test]
         public void TestPerformanceDequeIterate()
         {
             foreach (var item in d)
