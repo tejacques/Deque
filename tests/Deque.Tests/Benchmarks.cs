@@ -15,7 +15,7 @@ namespace Deque.Tests
         List<int> l;
         LinkedList<int> ll;
 
-        int loops = 10000000;
+        int loops = 30000000;
 
         [TestFixtureSetUp]
         public void SetUp()
@@ -23,7 +23,7 @@ namespace Deque.Tests
             d = new Deque<int>(loops);
             q = new Queue<int>(loops);
             s = new Stack<int>(loops);
-            l = new List<int>(loops);
+            l = new List<int> (loops);
             ll = new LinkedList<int>();
         }
 
