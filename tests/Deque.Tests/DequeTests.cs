@@ -110,12 +110,17 @@ namespace Deque.Tests
                 deque.Add(i);
             }
 
+            Deque<int> dequeCopy = new Deque<int>(deque);
+
             for (int expected = 0; expected < loops; expected++)
             {
                 int actual = deque.RemoveFront();
+                int actualCopy = dequeCopy[expected];
 
                 Assert.AreEqual(expected, actual);
+                Assert.AreEqual(expected, actualCopy);
             }
+
         }
     }
 }
