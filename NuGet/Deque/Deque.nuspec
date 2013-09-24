@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Deque</id>
-    <version>0.0.1</version>
+    <version>0.1.0</version>
     <title>Deque</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
@@ -17,21 +17,30 @@
         An open source helper library for generic Deques.
     </summary>
     <releaseNotes>
-        Release Notes:
+        Version Release Notes:
+
+        Version 0.1.0:
+         - Changed target platform from .NET 3.5 to .NET 2.0
+         - Added various runtime optimizations
+         - Fixed several bugs
+         - Added more test cases
 
         Version 0.0.1:
-         - A lot of bug fixes, added some basic test cases. Still not fully documented/tested. Use at your own risk.
+         - A lot of bug fixes
+         - Added some basic test cases
+         - Still not fully documented/tested -- Use at your own risk
 
         Version 0.0.0:
-         - Basic structure and support. Not fully documented or tested
+         - Basic structure and support
+         - Not fully documented or tested
     </releaseNotes>
     <dependencies>
     </dependencies>
     <copyright>Copyright 2013</copyright>
-    <tags>Deque Push Pop Stack Queue</tags>
+    <tags>Deque Dequeue Push Pop Stack Queue Double-Ended-Queue</tags>
   </metadata>
   <files>
-    <file src="..\..\lib\*.*" target="lib\Net35" />
+    <file src="..\..\lib\*.*" target="lib\Net20" />
     <file src="..\..\src\Deque\*.cs" target="src\Deque" />
   </files>
 </package>
