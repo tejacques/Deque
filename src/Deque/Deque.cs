@@ -231,7 +231,7 @@ namespace System.Collections.Generic
                     yield return buffer[i];
                 }
 
-                for (int i = 0; i <= endOffset; i++)
+                for (int i = 0; i < endOffset; i++)
                 {
                     yield return buffer[i];
                 }
@@ -239,7 +239,7 @@ namespace System.Collections.Generic
             else
             {
                 int endIndex = startOffset + this.Count;
-                for (int i = startOffset; i <= endIndex; i++)
+                for (int i = startOffset; i < endIndex; i++)
                 {
                     yield return buffer[i];
                 }
