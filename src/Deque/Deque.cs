@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.Collections.Generic
@@ -57,6 +58,7 @@ namespace System.Collections.Generic
             capacity = Utility.ClosestPowerOfTwoGreaterThan(capacity);
 
             buffer = new T[capacity];
+            this.capacityMinusOne = capacity - 1;
             this.startOffset = 0;
             this.endOffset = 0;
             this.shiftEndOffset(-1);
@@ -71,6 +73,8 @@ namespace System.Collections.Generic
         {
             InsertRange(0, collection);
         }
+
+        private int capacityMinusOne;
 
         /// <summary>
         /// Gets or sets the total number of elements the internal data structure can hold without resizing.
@@ -106,6 +110,7 @@ namespace System.Collections.Generic
                 buffer = newBuffer;
                 startOffset = 0;
                 endOffset = Count - 1;
+                capacityMinusOne = buffer.Length - 1;
             }
         }
 
@@ -136,7 +141,7 @@ namespace System.Collections.Generic
 
         private int toBufferIndex(int index)
         {
-            return (index + startOffset) & (Capacity-1);
+            return (index + startOffset) & (capacityMinusOne);
         }
 
         private void checkIndexOutOfRange(int index)
@@ -172,11 +177,7 @@ namespace System.Collections.Generic
 
         private int shiftStartOffset(int value)
         {
-            this.startOffset = (this.startOffset + value) & (this.Capacity-1);
-            while (this.startOffset < 0)
-            {
-                this.startOffset += this.Capacity;
-            }
+            this.startOffset = (this.startOffset + value) & (capacityMinusOne);
             return this.startOffset;
         }
 
@@ -194,11 +195,7 @@ namespace System.Collections.Generic
 
         private int shiftEndOffset(int value)
         {
-            this.endOffset = (this.endOffset + value) & (this.Capacity-1);
-            while (this.endOffset < 0)
-            {
-                this.endOffset += this.Capacity;
-            }
+            this.endOffset = (this.endOffset + value) & (capacityMinusOne);
             return this.endOffset;
         }
 
@@ -222,7 +219,6 @@ namespace System.Collections.Generic
         /// <returns>An iterator that can be used to iterate through the Deque.</returns>
         public IEnumerator<T> GetEnumerator()
         {
-            int count = this.Count;
 
             // The below is done for performance reasons.
             // Rather than doing bounds checking and modulo arithmetic that would go along with
@@ -235,14 +231,15 @@ namespace System.Collections.Generic
                     yield return buffer[i];
                 }
 
-                for (int i = 0; i < endOffset; i++)
+                for (int i = 0; i <= endOffset; i++)
                 {
                     yield return buffer[i];
                 }
             }
             else
             {
-                for (int i = startOffset; i < startOffset +count; i++)
+                int endIndex = startOffset + this.Count;
+                for (int i = startOffset; i <= endIndex; i++)
                 {
                     yield return buffer[i];
                 }
