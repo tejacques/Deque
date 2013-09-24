@@ -40,7 +40,7 @@ This implementation of Deque was made to be highly performant, and uses several 
 |   LinkedList   |  Remove   |   30000000 |	     394  |           	     13.13  |          328.33%  |
 | **LinkedList** | **Total** |   90000000 |   **4581**|           	   **50.90**|        **923.59%**|
 |   List         |  Insert   |   30000000 |      196  |           	      6.53  |          102.08%  |
-|   List         |  Iterate  |   30000000 |	      79  |           	      4.63  |           42.93%  |
+|   List         |  Iterate  |   30000000 |	      79  |           	      2.63  |           42.93%  |
 |   List         |  Remove   |   30000000 |	     116  |           	      3.87  |           96.67%  |
 | **List**       | **Total** |   90000000 |	   **391**|           	    **4.34**|         **78.83%**|
 |   Queue        |  Insert   |   30000000 |	     443  |           	     14.77  |          230.73%  |
