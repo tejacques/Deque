@@ -2,8 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace System.Collections.Generic
@@ -68,7 +66,7 @@ namespace System.Collections.Generic
         /// </summary>
         /// <param name="collection">The co</param>
         public Deque(IEnumerable<T> collection)
-            : this(collection.Count())
+            : this(Utility.Count(collection))
         {
             InsertRange(0, collection);
         }
@@ -584,7 +582,7 @@ namespace System.Collections.Generic
         /// <param name="collection">The collection to add.</param>
         public void InsertRange(int index, IEnumerable<T> collection)
         {
-            int count = collection.Count();
+            int count = Utility.Count(collection);
             this.InsertRange(index, collection, 0, count);
         }
 
