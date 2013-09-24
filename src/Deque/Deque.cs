@@ -98,13 +98,14 @@ namespace System.Collections.Generic
                 }
 
                 // Create a new array and copy the old values.
-                T[] newBuffer = new T[value];
+                int powOfTwo = Utility.ClosestPowerOfTwoGreaterThan(value);
+                T[] newBuffer = new T[powOfTwo];
                 this.CopyTo(newBuffer, 0);
 
                 // Set up to use the new buffer.
                 buffer = newBuffer;
                 startOffset = 0;
-                endOffset = 0;
+                endOffset = Count - 1;
             }
         }
 
