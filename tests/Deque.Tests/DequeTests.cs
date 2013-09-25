@@ -96,12 +96,30 @@ namespace Deque.Tests
                 Assert.AreEqual(itm, deque[offset]);
                 offset++;
             }
+
+            int[] itemBackRange = new[] { 7, 8, 9, 10 };
+            offset = deque.Count;
+            deque.AddBackRange(itemBackRange);
+            foreach (var itm in itemBackRange)
+            {
+                Assert.AreEqual(itm, deque[offset]);
+                offset++;
+            }
+
+            int[] itemFrontRange = new[] { 3, 4, 5, 6 };
+            deque.AddFrontRange(itemFrontRange);
+
+            for (int i = 0; i < itemFrontRange.Length; i++)
+            {
+                var itm = itemFrontRange[i];
+                Assert.AreEqual(itm, deque[i]);
+            }
         }
 
         [Test]
         public void TestBulkAdd()
         {
-            int loops = 1000000;
+            int loops = 100000;
             Deque<int> deque = new Deque<int>();
             for (int i = 1; i < loops; i++)
             {
@@ -121,6 +139,40 @@ namespace Deque.Tests
                 Assert.AreEqual(expected, actualCopy, "Copied deque item differs from expected value");
             }
 
+        }
+
+        [Test]
+        public void TestRemove()
+        {
+            int[] items = new[] { 0, 1, 2, 3 };
+            Deque<int> deque = new Deque<int>(items);
+
+            Assert.IsTrue(deque.Contains(0));
+            Assert.IsTrue(deque.Remove(0));
+            Assert.IsFalse(deque.Contains(0));
+            Assert.AreEqual(1, deque.RemoveFront());
+            Assert.AreEqual(3, deque.RemoveBack());
+
+            deque.Clear();
+            deque.AddRange(items);
+            Assert.IsTrue(deque.Contains(2));
+            deque.RemoveAt(2);
+            Assert.IsFalse(deque.Contains(2));
+
+            deque.Clear();
+            deque.AddRange(items);
+
+            foreach (var item in items)
+            {
+                Assert.IsTrue(deque.Contains(item));
+            }
+
+            deque.RemoveRange(1, 2);
+
+            Assert.IsTrue(deque.Contains(0));
+            Assert.IsFalse(deque.Contains(1));
+            Assert.IsFalse(deque.Contains(2));
+            Assert.IsTrue(deque.Contains(3));
         }
     }
 }
