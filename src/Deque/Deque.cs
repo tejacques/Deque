@@ -541,7 +541,7 @@ namespace System.Collections.Generic
         /// <param name="collection">The collection to add.</param>
         public void AddFrontRange(IEnumerable<T> collection)
         {
-            InsertRange(0, collection);
+            AddFrontRange(collection, 0, Utility.Count(collection));
         }
 
         /// <summary>
@@ -561,7 +561,7 @@ namespace System.Collections.Generic
         /// <param name="collection">The collection to add.</param>
         public void AddBackRange(IEnumerable<T> collection)
         {
-            InsertRange(this.Count, collection);
+            AddBackRange(collection, 0, Utility.Count(collection));
         }
 
         /// <summary>
