@@ -4,7 +4,7 @@ Deque
 What is it?
 -----------
 
-A C# Generic Deque class implemented in .NET 2.0 with no dependencies. Deques have constant time insertion and removal from either end. This implementation is a circular-array backed Deque class to the System.Collections.Generic namespace. The tradeoff over a doubly-linked-list backed Deque is that arbitrary access into the deque is onstant time, but arbitrary insertion into the deque is O(n), whereas a doubly-linked-list backed deque is the opposite.
+A C# Generic Deque class implemented in .NET 2.0 with no dependencies. Deques have constant time insertion and removal from either end. This implementation is a circular-array backed Deque class to the System.Collections.Generic namespace. The tradeoff over a doubly-linked-list backed Deque is that arbitrary access into the deque is constant time, but arbitrary insertion into the deque is O(n), whereas a doubly-linked-list backed deque is the opposite.
 
 More information about Deques can be found here: http://en.wikipedia.org/wiki/Double-ended_queue
 
