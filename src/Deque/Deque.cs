@@ -631,7 +631,7 @@ namespace System.Collections.Generic
             {
                 // Inserting into the second half of the list
 
-                if (index < Count - 1)
+                if (index < Count)
                 {
                     // Move items up:
                     // [index, Count) -> [index + count, count + Count)
