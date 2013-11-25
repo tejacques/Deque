@@ -142,6 +142,29 @@ namespace Deque.Tests
         }
 
         [Test]
+        public void TestBulkAddFront()
+        {
+            int loops = 100;
+            Deque<int> deque = new Deque<int>();
+            for (int i = loops -1; i >= 0; i--)
+            {
+                deque.AddFront(i);
+            }
+
+            Deque<int> dequeCopy = new Deque<int>(deque);
+
+            for (int expected = 0; expected < loops; expected++)
+            {
+                int actual = deque.RemoveFront();
+                int actualCopy = dequeCopy[expected];
+
+                Assert.AreEqual(expected, actual, "Original deque item differs from expected value");
+                Assert.AreEqual(expected, actualCopy, "Copied deque item differs from expected value");
+            }
+
+        }
+
+        [Test]
         public void TestRemove()
         {
             int[] items = new[] { 0, 1, 2, 3 };

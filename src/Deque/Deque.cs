@@ -330,13 +330,13 @@ namespace System.Collections.Generic
 
             checkArgumentsOutOfRange(array.Length, arrayIndex, this.Count);
 
-            if (startOffset > endOffset)
+            if (startOffset !=0 && startOffset >= endOffset)
             {
                 int lengthFromStart = Capacity - startOffset;
                 int lengthFromEnd = Count - lengthFromStart;
 
                 Array.Copy(buffer, startOffset, array, 0, lengthFromStart);
-                Array.Copy(buffer, 0, array, lengthFromStart, Count - lengthFromEnd);
+                Array.Copy(buffer, 0, array, lengthFromStart, lengthFromEnd);
             }
             else
             {
