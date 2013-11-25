@@ -144,7 +144,7 @@ namespace Deque.Tests
         [Test]
         public void TestBulkAddFront()
         {
-            int loops = 100;
+            int loops = 100000;
             Deque<int> deque = new Deque<int>();
             for (int i = loops -1; i >= 0; i--)
             {
@@ -167,7 +167,7 @@ namespace Deque.Tests
         [Test]
         public void TestBulkInsert()
         {
-            int loops = 100;
+            int loops = 100000;
             Deque<int> deque = new Deque<int>();
 
             deque.AddFront(loops - 1);
