@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Deque</id>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <title>Deque</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
@@ -18,6 +18,9 @@
     </summary>
     <releaseNotes>
         Version Release Notes:
+
+        Version 0.1.1:
+         - Fix bug with inserting to a specific index.
 
         Version 0.1.0:
          - Changed target platform from .NET 3.5 to .NET 2.0
