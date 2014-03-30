@@ -10,7 +10,6 @@ namespace Deque.Tests
     {
 
         Deque<int> d;
-        Deque<int> dmc;
         Queue<int> q;
         Stack<int> s;
         List<int> l;
@@ -20,7 +19,6 @@ namespace Deque.Tests
         public void SetUp()
         {
             d = new Deque<int>();
-            dmc = new Deque<int>(16, 1000);
             q = new Queue<int>();
             s = new Stack<int>();
             l = new List<int>();
@@ -223,97 +221,6 @@ namespace Deque.Tests
             Assert.IsFalse(deque.Contains(1));
             Assert.IsFalse(deque.Contains(2));
             Assert.IsTrue(deque.Contains(3));
-        }
-
-        [Test]
-        public void TestAddWithMaxCapacity()
-        {
-            Deque<int> deque = new Deque<int>(10, 10);
-
-            Assert.IsTrue(deque.IsEmpty);
-
-            int item = 1;
-
-            Assert.IsFalse(deque.Contains(item));
-            deque.Add(item);
-
-            int actualBack;
-            actualBack = deque[0];
-
-            Assert.IsTrue(deque.Contains(item));
-            Assert.AreEqual(item, actualBack);
-
-            int itemNewBack = 2;
-            Assert.IsFalse(deque.Contains(itemNewBack));
-            deque.AddBack(itemNewBack);
-
-            Assert.IsTrue(deque.Contains(itemNewBack));
-            actualBack = deque[1];
-            Assert.AreEqual(itemNewBack, actualBack);
-
-            actualBack = deque.RemoveBack();
-            Assert.AreEqual(itemNewBack, actualBack);
-
-            int itemNewFront = -1;
-            Assert.IsFalse(deque.Contains(itemNewFront));
-            deque.AddFront(itemNewFront);
-
-            int actualFront;
-            Assert.IsTrue(deque.Contains(itemNewFront));
-
-            actualFront = deque[0];
-            Assert.AreEqual(itemNewFront, actualFront);
-
-            actualFront = deque.RemoveFront();
-            Assert.AreEqual(itemNewFront, actualFront);
-
-            int[] itemRange = new[] { 3, 4, 5, 6 };
-            int offset = deque.Count;
-            deque.AddRange(itemRange);
-
-            foreach (var itm in itemRange)
-            {
-                Assert.AreEqual(itm, deque[offset]);
-                offset++;
-            }
-
-            int[] itemBackRange = new[] { 7, 8, 9, 10 };
-            offset = deque.Count;
-            deque.AddBackRange(itemBackRange);
-            foreach (var itm in itemBackRange)
-            {
-                Assert.AreEqual(itm, deque[offset]);
-                offset++;
-            }
-
-            int[] itemFrontRange = new[] { 3, 4, 5, 6 };
-            deque.AddFrontRange(itemFrontRange);
-
-            for (int i = 0; i < itemFrontRange.Length; i++)
-            {
-                var itm = itemFrontRange[i];
-                Assert.AreEqual(itm, deque[i]);
-            }
-        }
-
-        [Test]
-        public void TestRemoveWithMaxCapacity()
-        {
-            int[] items = new[] { 0, 1, 2, 3, 4 };
-            Deque<int> deque = new Deque<int>(items, 3);
-
-            // Should have overwritten 0 and 1
-            Assert.IsFalse(deque.Contains(0));
-            Assert.IsFalse(deque.Contains(1));
-
-            Assert.AreEqual(3, deque.RemoveFront());
-            Assert.AreEqual(2, deque.RemoveBack());
-
-            deque.Clear();
-            deque.AddRange(items);
-            Assert.IsTrue(deque.Contains(2));
-            deque.RemoveAt(2);
-            Assert.IsFalse(deque.Contains(2));
         }
     }
 }
