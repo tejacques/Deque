@@ -338,15 +338,15 @@ namespace System.Collections.Generic
         /// </exception>
         public void CopyTo(T[] array, int arrayIndex)
         {
+            if (null == array)
+            {
+                throw new ArgumentNullException("array", "Array is null");
+            }
+
             // Nothing to copy
             if (null == this.buffer)
             {
                 return;
-            }
-
-            if (null == array)
-            {
-                throw new ArgumentNullException("array", "Array is null");
             }
 
             checkArgumentsOutOfRange(array.Length, arrayIndex, this.Count);
