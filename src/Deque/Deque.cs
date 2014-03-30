@@ -23,19 +23,9 @@ namespace System.Collections.Generic
         private const int defaultCapacity = 16;
 
         /// <summary>
-        /// The maximum capacity of the deque.
-        /// </summary>
-        private readonly int maxCapacity;
-
-        /// <summary>
         /// The first element offset from the beginning of the data array.
         /// </summary>
         private int startOffset;
-
-        /// <summary>
-        /// The last element offset from the beginning of the data array.
-        /// </summary>
-        //private int endOffset;
 
         /// <summary>
         /// The circular array holding the items.
@@ -51,19 +41,13 @@ namespace System.Collections.Generic
         /// Creates a new instance of the Deque class with the specified capacity.
         /// </summary>
         /// <param name="capacity">The initial capacity of the Deque.</param>
-        /// <param name="maxCapacity">The max capacity of the Deque.</param>
-        public Deque(int capacity, int maxCapacity = 0)
+        public Deque(int capacity)
         {
             if (capacity < 0)
             {
                 throw new ArgumentOutOfRangeException("capacity", "capacity is less than 0.");
             }
-            if (maxCapacity < 0)
-            {
-                throw new ArgumentOutOfRangeException("maxCapacity", "maxCapacity is less than 0.");
-            }
 
-            this.maxCapacity = maxCapacity;
             this.Capacity = capacity;
         }
 
@@ -71,8 +55,8 @@ namespace System.Collections.Generic
         /// Create a new instance of the Deque class with the elements from the specified collection.
         /// </summary>
         /// <param name="collection">The co</param>
-        public Deque(IEnumerable<T> collection, int maxCapacity = 0)
-            : this(Utility.Count(collection), maxCapacity)
+        public Deque(IEnumerable<T> collection)
+            : this(Utility.Count(collection))
         {
             InsertRange(0, collection);
         }
@@ -108,16 +92,7 @@ namespace System.Collections.Generic
                 // Create a new array and copy the old values.
                 int powOfTwo = Utility.ClosestPowerOfTwoGreaterThan(value);
 
-                // Limit value to be no more than the maxCapacity
-                if (this.maxCapacity > 0)
-                {
-                    value = Math.Min(powOfTwo, this.maxCapacity);
-                    powOfTwo = Utility.ClosestPowerOfTwoGreaterThan(value);
-                }
-                else
-                {
-                    value = powOfTwo;
-                }
+                value = powOfTwo;
 
                 T[] newBuffer = new T[value];
                 this.CopyTo(newBuffer, 0);
@@ -126,18 +101,6 @@ namespace System.Collections.Generic
                 buffer = newBuffer;
                 startOffset = 0;
                 this.capacityClosestPowerOfTwoMinusOne = powOfTwo - 1;
-            }
-        }
-
-        /// <summary>
-        /// Gets the maximum number of elements
-        /// the internal array can hold.
-        /// </summary>
-        public int MaxCapacity
-        {
-            get
-            {
-                return this.maxCapacity;
             }
         }
 
@@ -172,24 +135,6 @@ namespace System.Collections.Generic
 
             bufferIndex = (index + this.startOffset)
                 & this.capacityClosestPowerOfTwoMinusOne;
-
-            //bufferIndex = (index + this.startOffset)
-            //& this.capacityClosestPowerOfTwoMinusOne;
-
-            //if (index > 0 && index < this.buffer.Length)
-            //{
-            //    bufferIndex = (index + this.startOffset)
-            //    & this.capacityClosestPowerOfTwoMinusOne;
-            //}
-            //else
-            //{
-            //    bufferIndex = (this.startOffset + index) % this.Capacity;
-
-            //    if (bufferIndex < 0)
-            //    {
-            //        bufferIndex += this.Capacity;
-            //    }
-            //}
 
             return bufferIndex;
         }
@@ -229,13 +174,6 @@ namespace System.Collections.Generic
         {
             this.startOffset = toBufferIndex(value);
 
-            //this.startOffset = (this.startOffset + value) & (capacityClosestPowerOfTwoMinusOne);
-
-            //if (this.startOffset >= this.Capacity)
-            //{
-            //    this.startOffset -= this.Capacity;
-            //}
-
             return this.startOffset;
         }
 
@@ -251,44 +189,21 @@ namespace System.Collections.Generic
             return shiftStartOffset(value);
         }
 
-        //private int shiftEndOffset(int value)
-        //{
-        //    this.endOffset = (this.endOffset + value);
-        //    if (this.maxCapacity > 0 && this.endOffset >= this.maxCapacity)
-        //    {
-        //        this.endOffset %= this.maxCapacity;
-        //    }
-        //    else
-        //    {
-        //        this.endOffset &= (capacityMinusOne);
-        //    }
-        //    return this.endOffset;
-        //}
-
-        //private int preShiftEndOffset(int value)
-        //{
-        //    int offset = this.endOffset;
-        //    this.shiftEndOffset(value);
-        //    return offset;
-        //}
-
-        //private int postShiftEndOffset(int value)
-        //{
-        //    return this.shiftEndOffset(value);
-        //}
-
         #region IEnumberable
 
         /// <summary>
         /// Returns an enumerator that iterates through the Deque.
         /// </summary>
-        /// <returns>An iterator that can be used to iterate through the Deque.</returns>
+        /// <returns>
+        /// An iterator that can be used to iterate through the Deque.
+        /// </returns>
         public IEnumerator<T> GetEnumerator()
         {
 
             // The below is done for performance reasons.
-            // Rather than doing bounds checking and modulo arithmetic that would go along with
-            // calls to Get(index), we can skip all of that by referencing the underlying array.
+            // Rather than doing bounds checking and modulo arithmetic
+            // that would go along with calls to Get(index), we can skip
+            // all of that by referencing the underlying array.
 
             if (this.startOffset + this.Count > this.Capacity)
             {
@@ -343,14 +258,7 @@ namespace System.Collections.Generic
 
         private void incrementCount(int value)
         {
-            if (this.maxCapacity > 0)
-            {
-                this.Count = Math.Min(this.Count + value, this.maxCapacity);
-            }
-            else
-            {
-                this.Count = this.Count + value;
-            }
+            this.Count = this.Count + value;
         }
 
         private void decrementCount(int value)
@@ -374,7 +282,6 @@ namespace System.Collections.Generic
         {
             this.Count = 0;
             this.startOffset = 0;
-            //this.endOffset = 0;
         }
 
         /// <summary>
@@ -741,9 +648,6 @@ namespace System.Collections.Generic
                             buffer[toBufferIndex(index + j)];
                     }
                 }
-
-                // shift the ending offset
-                //this.shiftEndOffset(count);
             }
 
             // Copy new items into place
@@ -821,8 +725,6 @@ namespace System.Collections.Generic
                 {
                     buffer[toBufferIndex(index + j)] = buffer[toBufferIndex(readIndex + j)];
                 }
-
-                //this.shiftEndOffset(-count);
             }
 
             // Adjust valid count
