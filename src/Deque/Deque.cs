@@ -13,7 +13,9 @@ namespace System.Collections.Generic
     /// The Deque also has O(1) indexed lookup, as it is backed
     /// by a circular array.
     /// </summary>
-    /// <typeparam name="T">The type of objects to store in the deque.</typeparam>
+    /// <typeparam name="T">
+    /// The type of objects to store in the deque.
+    /// </typeparam>
     public class Deque<T> : IList<T>
     {
 
@@ -28,41 +30,35 @@ namespace System.Collections.Generic
         private int startOffset;
 
         /// <summary>
-        /// The last element offset from the beginning of the data array.
-        /// </summary>
-        private int endOffset;
-
-        /// <summary>
         /// The circular array holding the items.
         /// </summary>
         private T[] buffer;
 
         /// <summary>
-        /// Creates a new instance of the Deque class with the default capacity.
+        /// Creates a new instance of the Deque class with
+        /// the default capacity.
         /// </summary>
         public Deque() : this(defaultCapacity) { }
 
         /// <summary>
-        /// Creates a new instance of the Deque class with the specified capacity.
+        /// Creates a new instance of the Deque class with
+        /// the specified capacity.
         /// </summary>
-        /// <param name="capacity"></param>
+        /// <param name="capacity">The initial capacity of the Deque.</param>
         public Deque(int capacity)
         {
             if (capacity < 0)
             {
-                throw new ArgumentOutOfRangeException("capacity", "capacity is less than 0.");
+                throw new ArgumentOutOfRangeException(
+                    "capacity", "capacity is less than 0.");
             }
 
-            capacity = Utility.ClosestPowerOfTwoGreaterThan(capacity);
-
-            buffer = new T[capacity];
-            this.capacityMinusOne = capacity - 1;
-            this.startOffset = 0;
-            this.endOffset = 0;
+            this.Capacity = capacity;
         }
 
         /// <summary>
-        /// Create a new instance of the Deque class with the elements from the specified collection.
+        /// Create a new instance of the Deque class with the elements
+        /// from the specified collection.
         /// </summary>
         /// <param name="collection">The co</param>
         public Deque(IEnumerable<T> collection)
@@ -71,10 +67,11 @@ namespace System.Collections.Generic
             InsertRange(0, collection);
         }
 
-        private int capacityMinusOne;
+        private int capacityClosestPowerOfTwoMinusOne;
 
         /// <summary>
-        /// Gets or sets the total number of elements the internal data structure can hold without resizing.
+        /// Gets or sets the total number of elements
+        /// the internal array can hold without resizing.
         /// </summary>
         public int Capacity
         {
@@ -87,27 +84,32 @@ namespace System.Collections.Generic
             {
                 if (value < 0)
                 {
-                    throw new ArgumentOutOfRangeException("value", "Capacity is less than 0.");
+                    throw new ArgumentOutOfRangeException(
+                        "value",
+                        "Capacity is less than 0.");
                 }
                 else if (value < this.Count)
                 {
-                    throw new InvalidOperationException("Capacity cannot be set to a value less than Count");
+                    throw new InvalidOperationException(
+                        "Capacity cannot be set to a value less than Count");
                 }
-                else if (value == buffer.Length)
+                else if (null != buffer && value == buffer.Length)
                 {
                     return;
                 }
 
                 // Create a new array and copy the old values.
                 int powOfTwo = Utility.ClosestPowerOfTwoGreaterThan(value);
-                T[] newBuffer = new T[powOfTwo];
+
+                value = powOfTwo;
+
+                T[] newBuffer = new T[value];
                 this.CopyTo(newBuffer, 0);
 
                 // Set up to use the new buffer.
                 buffer = newBuffer;
                 startOffset = 0;
-                endOffset = Count;
-                capacityMinusOne = buffer.Length - 1;
+                this.capacityClosestPowerOfTwoMinusOne = powOfTwo - 1;
             }
         }
 
@@ -131,25 +133,34 @@ namespace System.Collections.Generic
         {
             if (this.Count + numElements > this.Capacity)
             {
-                this.Capacity = Utility.ClosestPowerOfTwoGreaterThan(
-                    this.Count + numElements);
+                this.Capacity = this.Count + numElements;
             }
         }
 
         private int toBufferIndex(int index)
         {
-            return (index + startOffset) & (capacityMinusOne);
+            int bufferIndex;
+
+
+            bufferIndex = (index + this.startOffset)
+                & this.capacityClosestPowerOfTwoMinusOne;
+
+            return bufferIndex;
         }
 
         private void checkIndexOutOfRange(int index)
         {
             if (index >= this.Count)
             {
-                throw new IndexOutOfRangeException("The supplied index is greater than the Count");
+                throw new IndexOutOfRangeException(
+                    "The supplied index is greater than the Count");
             }
         }
 
-        private static void checkArgumentsOutOfRange(int length, int offset, int count)
+        private static void checkArgumentsOutOfRange(
+            int length,
+            int offset,
+            int count)
         {
             if (offset < 0)
             {
@@ -167,14 +178,16 @@ namespace System.Collections.Generic
             {
                 throw new ArgumentException(
                     String.Format(
-                    "Invalid offset ({0}) or count + ({1}) for source length {2}",
+                    "Invalid offset ({0}) or count + ({1}) "
+                    + "for source length {2}",
                     offset, count, length));
             }
         }
 
         private int shiftStartOffset(int value)
         {
-            this.startOffset = (this.startOffset + value) & (capacityMinusOne);
+            this.startOffset = toBufferIndex(value);
+
             return this.startOffset;
         }
 
@@ -190,53 +203,40 @@ namespace System.Collections.Generic
             return shiftStartOffset(value);
         }
 
-        private int shiftEndOffset(int value)
-        {
-            this.endOffset = (this.endOffset + value) & (capacityMinusOne);
-            return this.endOffset;
-        }
-
-        private int preShiftEndOffset(int value)
-        {
-            int offset = this.endOffset;
-            this.shiftEndOffset(value);
-            return offset;
-        }
-
-        private int postShiftEndOffset(int value)
-        {
-            return this.shiftEndOffset(value);
-        }
-
         #region IEnumberable
 
         /// <summary>
         /// Returns an enumerator that iterates through the Deque.
         /// </summary>
-        /// <returns>An iterator that can be used to iterate through the Deque.</returns>
+        /// <returns>
+        /// An iterator that can be used to iterate through the Deque.
+        /// </returns>
         public IEnumerator<T> GetEnumerator()
         {
 
             // The below is done for performance reasons.
-            // Rather than doing bounds checking and modulo arithmetic that would go along with
-            // calls to Get(index), we can skip all of that by referencing the underlying array.
+            // Rather than doing bounds checking and modulo arithmetic
+            // that would go along with calls to Get(index), we can skip
+            // all of that by referencing the underlying array.
 
-            if (startOffset > endOffset)
+            if (this.startOffset + this.Count > this.Capacity)
             {
-                for (int i = startOffset; i < Capacity; i++)
+                for (int i = this.startOffset; i < this.Capacity; i++)
                 {
                     yield return buffer[i];
                 }
 
-                for (int i = 0; i < endOffset; i++)
+                int endIndex = toBufferIndex(
+                    this.Count - this.startOffset - 1);
+                for (int i = 0; i < endIndex; i++)
                 {
                     yield return buffer[i];
                 }
             }
             else
             {
-                int endIndex = startOffset + this.Count;
-                for (int i = startOffset; i < endIndex; i++)
+                int endIndex = this.startOffset + this.Count;
+                for (int i = this.startOffset; i < endIndex; i++)
                 {
                     yield return buffer[i];
                 }
@@ -246,7 +246,9 @@ namespace System.Collections.Generic
         /// <summary>
         /// Returns an enumerator that iterates through the Deque.
         /// </summary>
-        /// <returns>An iterator that can be used to iterate through the Deque.</returns>
+        /// <returns>
+        /// An iterator that can be used to iterate through the Deque.
+        /// </returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.GetEnumerator();
@@ -271,6 +273,16 @@ namespace System.Collections.Generic
             private set;
         }
 
+        private void incrementCount(int value)
+        {
+            this.Count = this.Count + value;
+        }
+
+        private void decrementCount(int value)
+        {
+            this.Count = Math.Max(this.Count - value, 0);
+        }
+
         /// <summary>
         /// Adds an item to the Deque.
         /// </summary>
@@ -287,14 +299,15 @@ namespace System.Collections.Generic
         {
             this.Count = 0;
             this.startOffset = 0;
-            this.endOffset = 0;
         }
 
         /// <summary>
         /// Determines whether the Deque contains a specific value.
         /// </summary>
         /// <param name="item">The object to locate in the Deque.</param>
-        /// <returns>true if item is found in the Deque; otherwise, false.</returns>
+        /// <returns>
+        /// true if item is found in the Deque; otherwise, false.
+        /// </returns>
         public bool Contains(T item)
         {
             return this.IndexOf(item) != -1;
@@ -325,22 +338,35 @@ namespace System.Collections.Generic
         /// </exception>
         public void CopyTo(T[] array, int arrayIndex)
         {
-            if (array == null)
+            if (null == array)
+            {
                 throw new ArgumentNullException("array", "Array is null");
+            }
+
+            // Nothing to copy
+            if (null == this.buffer)
+            {
+                return;
+            }
 
             checkArgumentsOutOfRange(array.Length, arrayIndex, this.Count);
 
-            if (startOffset !=0 && startOffset >= endOffset)
+            if (0 != this.startOffset
+                && this.startOffset + this.Count >= this.Capacity)
             {
-                int lengthFromStart = Capacity - startOffset;
-                int lengthFromEnd = Count - lengthFromStart;
+                int lengthFromStart = this.Capacity - this.startOffset;
+                int lengthFromEnd = this.Count - lengthFromStart;
 
-                Array.Copy(buffer, startOffset, array, 0, lengthFromStart);
-                Array.Copy(buffer, 0, array, lengthFromStart, lengthFromEnd);
+                Array.Copy(
+                    buffer, this.startOffset, array, 0, lengthFromStart);
+
+                Array.Copy(
+                    buffer, 0, array, lengthFromStart, lengthFromEnd);
             }
             else
             {
-                Array.Copy(buffer, startOffset, array, 0, Count);
+                Array.Copy(
+                    buffer, this.startOffset, array, 0, Count);
             }
         }
 
@@ -400,7 +426,9 @@ namespace System.Collections.Generic
         /// <summary>
         /// Inserts an item to the Deque at the specified index.
         /// </summary>
-        /// <param name="index">The zero-based index at which item should be inserted.</param>
+        /// <param name="index">
+        /// The zero-based index at which item should be inserted.
+        /// </param>
         /// <param name="item">The object to insert into the Deque.</param>
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// <paramref name="index"/> is not a valid index in the Deque.
@@ -427,7 +455,9 @@ namespace System.Collections.Generic
         /// Determines the index of a specific item in the deque.
         /// </summary>
         /// <param name="item">The object to locate in the deque.</param>
-        /// <returns>The index of the item if found in the deque; otherwise, -1.</returns>
+        /// <returns>
+        /// The index of the item if found in the deque; otherwise, -1.
+        /// </returns>
         public int IndexOf(T item)
         {
             int index = 0;
@@ -451,7 +481,9 @@ namespace System.Collections.Generic
         /// <summary>
         /// Removes the item at the specified index.
         /// </summary>
-        /// <param name="index">The zero-based index of the item to remove.</param>
+        /// <param name="index">
+        /// The zero-based index of the item to remove.
+        /// </param>
         /// <exception cref="System.ArgumentOutOfRangeException">
         /// <paramref name="index"/> is not a valid index in the Deque.
         /// </exception>
@@ -480,7 +512,7 @@ namespace System.Collections.Generic
         {
             ensureCapacityFor(1);
             buffer[postShiftStartOffset(-1)] = item;
-            Count++;
+            incrementCount(1);
         }
 
         /// <summary>
@@ -490,8 +522,8 @@ namespace System.Collections.Generic
         public void AddBack(T item)
         {
             ensureCapacityFor(1);
-            buffer[preShiftEndOffset(1)] = item;
-            Count++;
+            buffer[toBufferIndex(this.startOffset + this.Count)] = item;
+            incrementCount(1);
         }
 
         /// <summary>
@@ -506,14 +538,14 @@ namespace System.Collections.Generic
             }
 
             T result = buffer[preShiftStartOffset(1)];
-            Count--;
+            decrementCount(1);
             return result;
         }
 
         /// <summary>
         /// Removes an item from the back of the Deque and returns it.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The item in the back of the Deque.</returns>
         public T RemoveBack()
         {
             if (this.IsEmpty)
@@ -521,8 +553,10 @@ namespace System.Collections.Generic
                 throw new InvalidOperationException("The Deque is empty");
             }
 
-            T result = buffer[postShiftEndOffset(-1)];
-            Count--;
+            //T result = buffer[postShiftEndOffset(-1)];
+            decrementCount(1);
+            T result = buffer[toBufferIndex(this.Count)];
+            
             return result;
         }
 
@@ -545,12 +579,20 @@ namespace System.Collections.Generic
         }
 
         /// <summary>
-        /// Adds count items from a collection of items from a specified index to the Deque.
+        /// Adds count items from a collection of items
+        /// from a specified index to the Deque.
         /// </summary>
         /// <param name="collection">The collection to add.</param>
-        /// <param name="fromIndex">The index in the collection to begin adding from.</param>
-        /// <param name="count">The number of items in the collection to add.</param>
-        public void AddFrontRange(IEnumerable<T> collection, int fromIndex, int count)
+        /// <param name="fromIndex">
+        /// The index in the collection to begin adding from.
+        /// </param>
+        /// <param name="count">
+        /// The number of items in the collection to add.
+        /// </param>
+        public void AddFrontRange(
+            IEnumerable<T> collection,
+            int fromIndex,
+            int count)
         {
             InsertRange(0, collection, fromIndex, count);
         }
@@ -565,20 +607,31 @@ namespace System.Collections.Generic
         }
 
         /// <summary>
-        /// Adds count items from a collection of items from a specified index to the back of the Deque.
+        /// Adds count items from a collection of items
+        /// from a specified index to the back of the Deque.
         /// </summary>
         /// <param name="collection">The collection to add.</param>
-        /// <param name="fromIndex">The index in the collection to begin adding from.</param>
-        /// <param name="count">The number of items in the collection to add.</param>
-        public void AddBackRange(IEnumerable<T> collection, int fromIndex, int count)
+        /// <param name="fromIndex">
+        /// The index in the collection to begin adding from.
+        /// </param>
+        /// <param name="count">
+        /// The number of items in the collection to add.
+        /// </param>
+        public void AddBackRange(
+            IEnumerable<T> collection,
+            int fromIndex,
+            int count)
         {
             InsertRange(this.Count, collection, fromIndex, count);
         }
 
         /// <summary>
-        /// Inserts a collection of items into the Deque at the specified index.
+        /// Inserts a collection of items into the Deque
+        /// at the specified index.
         /// </summary>
-        /// <param name="index">The index in the Deque to insert the collection.</param>
+        /// <param name="index">
+        /// The index in the Deque to insert the collection.
+        /// </param>
         /// <param name="collection">The collection to add.</param>
         public void InsertRange(int index, IEnumerable<T> collection)
         {
@@ -587,13 +640,24 @@ namespace System.Collections.Generic
         }
 
         /// <summary>
-        /// Inserts count items from a collection of items from a specified index into the Deque at the specified index.
+        /// Inserts count items from a collection of items from a specified
+        /// index into the Deque at the specified index.
         /// </summary>
-        /// <param name="index">The index in the Deque to insert the collection.</param>
+        /// <param name="index">
+        /// The index in the Deque to insert the collection.
+        /// </param>
         /// <param name="collection">The collection to add.</param>
-        /// <param name="fromIndex">The index in the collection to begin adding from.</param>
-        /// <param name="count">The number of items in the colleciton to add.</param>
-        public void InsertRange(int index, IEnumerable<T> collection, int fromIndex, int count)
+        /// <param name="fromIndex">
+        /// The index in the collection to begin adding from.
+        /// </param>
+        /// <param name="count">
+        /// The number of items in the colleciton to add.
+        /// </param>
+        public void InsertRange(
+            int index,
+            IEnumerable<T> collection,
+            int fromIndex,
+            int count)
         {
             checkIndexOutOfRange(index - 1);
 
@@ -605,7 +669,7 @@ namespace System.Collections.Generic
             // Make room
             ensureCapacityFor(count);
 
-            if (index < Count / 2)
+            if (index < this.Count / 2)
             {
                 // Inserting into the first half of the list
 
@@ -615,7 +679,7 @@ namespace System.Collections.Generic
                     //  [0, index) -> 
                     //  [Capacity - count, Capacity - count + index)
                     int copyCount = index;
-                    int shiftIndex = Capacity - count;
+                    int shiftIndex = this.Capacity - count;
                     for (int j = 0; j < copyCount; j++)
                     {
                         buffer[toBufferIndex(shiftIndex + j)] = 
@@ -631,11 +695,11 @@ namespace System.Collections.Generic
             {
                 // Inserting into the second half of the list
 
-                if (index < Count)
+                if (index < this.Count)
                 {
                     // Move items up:
                     // [index, Count) -> [index + count, count + Count)
-                    int copyCount = Count - index;
+                    int copyCount = this.Count - index;
                     int shiftIndex = index + count;
                     for (int j = 0; j < copyCount; j++)
                     {
@@ -643,9 +707,6 @@ namespace System.Collections.Generic
                             buffer[toBufferIndex(index + j)];
                     }
                 }
-
-                // shift the ending offset
-                this.shiftEndOffset(count);
             }
 
             // Copy new items into place
@@ -657,7 +718,7 @@ namespace System.Collections.Generic
             }
 
             // Adjust valid count
-            Count += count;
+            incrementCount(count);
         }
 
         /// <summary>
@@ -692,7 +753,8 @@ namespace System.Collections.Generic
             }
             else if (index > Count - count)
             {
-                throw new IndexOutOfRangeException("The supplied index is greater than the Count");
+                throw new IndexOutOfRangeException(
+                    "The supplied index is greater than the Count");
             }
 
             if ((index + (count / 2)) < Count / 2)
@@ -705,7 +767,8 @@ namespace System.Collections.Generic
                 int writeIndex = count;
                 for (int j = 0; j < copyCount; j++)
                 {
-                    buffer[toBufferIndex(writeIndex + j)] = buffer[toBufferIndex(j)];
+                    buffer[toBufferIndex(writeIndex + j)]
+                        = buffer[toBufferIndex(j)];
                 }
 
                 // Rotate to new view
@@ -716,19 +779,19 @@ namespace System.Collections.Generic
                 // Removing from second half of list
 
                 // Move items down:
-                // [index + collectionCount, count) -> [index, count - collectionCount)
+                // [index + collectionCount, count) ->
+                // [index, count - collectionCount)
                 int copyCount = Count - count - index;
                 int readIndex = index + count;
                 for (int j = 0; j < copyCount; ++j)
                 {
-                    buffer[toBufferIndex(index + j)] = buffer[toBufferIndex(readIndex + j)];
+                    buffer[toBufferIndex(index + j)] =
+                        buffer[toBufferIndex(readIndex + j)];
                 }
-
-                this.shiftEndOffset(-count);
             }
 
             // Adjust valid count
-            Count -= count;
+            decrementCount(count);
         }
 
         /// <summary>
@@ -743,7 +806,8 @@ namespace System.Collections.Generic
         }
 
         /// <summary>
-        /// Sets the value at the specified index of the Deque to the given item.
+        /// Sets the value at the specified index of the
+        /// Deque to the given item.
         /// </summary>
         /// <param name="index">The index of the deque to set the item.</param>
         /// <param name="item">The item to set at the specified index.</param>

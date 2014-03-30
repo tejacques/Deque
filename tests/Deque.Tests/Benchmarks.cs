@@ -13,7 +13,7 @@ namespace Deque.Tests
         List<int> l;
         LinkedList<int> ll;
 
-        int loops = 30000000;
+        int loops = 10000000;
 
         [TestFixtureSetUp]
         public void SetUp()
@@ -23,6 +23,29 @@ namespace Deque.Tests
             s = new Stack<int>(loops);
             l = new List<int> (loops);
             ll = new LinkedList<int>();
+        }
+
+        [Test]
+        public void _Jit()
+        {
+            int tmp = loops;
+            loops = 1;
+            TestPerformanceDequeAdd();
+            TestPerformanceDequeIterate();
+            TestPerformanceDequeRemove();
+            TestPerformanceStackAdd();
+            TestPerformanceStackIterate();
+            TestPerformanceStackRemove();
+            TestPerformanceQueueAdd();
+            TestPerformanceQueueIterate();
+            TestPerformanceQueueRemove();
+            TestPerformanceListAdd();
+            TestPerformanceListIterate();
+            TestPerformanceListRemove();
+            TestPerformanceLinkedListAdd();
+            TestPerformanceLinkedListIterate();
+            TestPerformanceLinkedListRemove();
+            loops = tmp;
         }
 
         [Test]
