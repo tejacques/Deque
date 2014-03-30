@@ -26,6 +26,11 @@ namespace Deque.Tests
         }
 
         [Test]
+        public void A_Jit_Startup()
+        {
+        }
+
+        [Test]
         public void TestPerformanceDequeAdd()
         {
             for (int i = 0; i < loops; i++)
