@@ -141,7 +141,6 @@ namespace System.Collections.Generic
         {
             int bufferIndex;
 
-
             bufferIndex = (index + this.startOffset)
                 & this.capacityClosestPowerOfTwoMinusOne;
 
