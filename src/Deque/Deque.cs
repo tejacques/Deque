@@ -521,7 +521,7 @@ namespace System.Collections.Generic
         public void AddBack(T item)
         {
             ensureCapacityFor(1);
-            buffer[toBufferIndex(this.startOffset + this.Count)] = item;
+            buffer[toBufferIndex(this.Count)] = item;
             incrementCount(1);
         }
 

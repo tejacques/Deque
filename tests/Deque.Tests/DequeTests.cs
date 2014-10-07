@@ -117,6 +117,16 @@ namespace Deque.Tests
         }
 
         [Test]
+        public void TestAddBack()
+        {
+            Deque<int> deque = new Deque<int>();           
+            deque.AddBack(1);
+            deque.RemoveFront();
+            deque.AddBack(1);
+            Assert.AreEqual(1, deque.RemoveFront());                      
+        }
+
+        [Test]
         public void TestBulkAdd()
         {
             int loops = 10000;
