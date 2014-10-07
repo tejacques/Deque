@@ -126,6 +126,53 @@ namespace Deque.Tests
             Assert.AreEqual(1, deque.RemoveFront());                      
         }
 
+        private bool back(int value, int position)
+        {
+            return value << position % 2 == 0;
+        }
+        [Test]
+        public void TestAddVariants()
+        {
+            for (int i = 0; i < Math.Pow(2, 4); i++)
+            {
+                Deque<int> deque = new Deque<int>();
+                if (back(i, 0))
+                {
+                    deque.AddBack(1);
+                }
+                else
+                {
+                    deque.AddFront(1);
+                }
+                if (back(i, 1))
+                {
+                    deque.RemoveBack();
+                }
+                else
+                {
+                    deque.RemoveFront();
+                }
+                if (back(i, 2))
+                {
+                    deque.AddBack(2);
+                }
+                else
+                {
+                    deque.AddFront(2);
+                }
+                int item;
+                if (back(i, 3))
+                {
+                    item = deque.RemoveBack();
+                }
+                else
+                {
+                    item = deque.RemoveFront();
+                }
+                Assert.AreEqual(2, item);
+            }
+        }
+
         [Test]
         public void TestBulkAdd()
         {
