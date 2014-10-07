@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Deque</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <title>Deque</title>
     <authors>Tom Jacques</authors>
     <owners>Tom Jacques</owners>
@@ -18,6 +18,9 @@
     </summary>
     <releaseNotes>
         Version Release Notes:
+
+        Version 1.0.1:
+         - Fix a bug with AddBack where removeFront/AddFront
 
         Version 1.0.0:
          - Stable release
