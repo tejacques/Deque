@@ -20,7 +20,7 @@
         Version Release Notes:
 
         Version 1.0.1:
-         - Fix a bug with AddBack where removeFront/AddFront
+         - Fix a bug with AddBack
 
         Version 1.0.0:
          - Stable release
