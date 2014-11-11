@@ -291,11 +291,32 @@ namespace System.Collections.Generic
             AddBack(item);
         }
 
+        private void ClearBuffer(int actualStart, int length)
+        {
+            int offset = toBufferIndex(actualStart);
+            if (offset + length > this.Capacity)
+            {
+                int endLength = this.Capacity - offset;
+                Array.Clear(this.buffer, offset, endLength);
+
+                endLength = toBufferIndex(length - offset - 1);
+                Array.Clear(this.buffer, 0, endLength);
+            }
+            else
+            {
+                Array.Clear(this.buffer, offset, length);
+            }
+        }
+
         /// <summary>
         /// Removes all items from the Deque.
         /// </summary>
         public void Clear()
         {
+            if (this.Count > 0)
+            {
+                ClearBuffer(0, this.Count);
+            }
             this.Count = 0;
             this.startOffset = 0;
         }
@@ -536,7 +557,8 @@ namespace System.Collections.Generic
                 throw new InvalidOperationException("The Deque is empty");
             }
 
-            T result = buffer[preShiftStartOffset(1)];
+            T result = buffer[this.startOffset];
+            buffer[preShiftStartOffset(1)] = default(T);
             decrementCount(1);
             return result;
         }
@@ -552,9 +574,10 @@ namespace System.Collections.Generic
                 throw new InvalidOperationException("The Deque is empty");
             }
 
-            //T result = buffer[postShiftEndOffset(-1)];
             decrementCount(1);
-            T result = buffer[toBufferIndex(this.Count)];
+            int endIndex = toBufferIndex(this.Count);
+            T result = buffer[endIndex];
+            buffer[endIndex] = default(T);
             
             return result;
         }
@@ -736,24 +759,27 @@ namespace System.Collections.Generic
             {
                 throw new InvalidOperationException("The Deque is empty");
             }
+            if (index > Count - count)
+            {
+                throw new IndexOutOfRangeException(
+                    "The supplied index is greater than the Count");
+            }
+
+            // Clear out the underlying array
+            ClearBuffer(index, count);
 
             if (index == 0)
             {
                 // Removing from the beginning: shift the start offset
                 this.shiftStartOffset(count);
-                Count -= count;
+                this.Count -= count;
                 return;
             }
             else if (index == Count - count)
             {
                 // Removing from the ending: trim the existing view
-                Count -= count;
+                this.Count -= count;
                 return;
-            }
-            else if (index > Count - count)
-            {
-                throw new IndexOutOfRangeException(
-                    "The supplied index is greater than the Count");
             }
 
             if ((index + (count / 2)) < Count / 2)
