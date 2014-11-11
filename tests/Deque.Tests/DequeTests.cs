@@ -279,5 +279,21 @@ namespace Deque.Tests
             Assert.IsFalse(deque.Contains(2));
             Assert.IsTrue(deque.Contains(3));
         }
+
+        [Test]
+        public void TestGetAndSet()
+        {
+            int[] items = new[] { 0, 1, 2, 3 };
+            Deque<int> deque = new Deque<int>(items);
+
+            for(int i = 0; i < deque.Count-1; i++)
+            {
+                var item = deque[i];
+                item++;
+                Assert.AreEqual(item, deque[i + 1]);
+                deque[i] = item;
+                Assert.AreEqual(item, deque[i]);
+            }
+        }
     }
 }
