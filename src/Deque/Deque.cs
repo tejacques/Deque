@@ -202,7 +202,7 @@ namespace System.Collections.Generic
             return shiftStartOffset(value);
         }
 
-        #region IEnumberable
+        #region IEnumerable
 
         /// <summary>
         /// Returns an enumerator that iterates through the Deque.
@@ -225,8 +225,7 @@ namespace System.Collections.Generic
                     yield return buffer[i];
                 }
 
-                int endIndex = toBufferIndex(
-                    this.Count - this.startOffset - 1);
+                int endIndex = toBufferIndex(this.Count);
                 for (int i = 0; i < endIndex; i++)
                 {
                     yield return buffer[i];
@@ -296,11 +295,11 @@ namespace System.Collections.Generic
             int offset = toBufferIndex(actualStart);
             if (offset + length > this.Capacity)
             {
-                int endLength = this.Capacity - offset;
-                Array.Clear(this.buffer, offset, endLength);
+                int len = this.Capacity - offset;
+                Array.Clear(this.buffer, offset, len);
 
-                endLength = toBufferIndex(length - offset - 1);
-                Array.Clear(this.buffer, 0, endLength);
+                len = toBufferIndex(length);
+                Array.Clear(this.buffer, 0, len);
             }
             else
             {

@@ -295,5 +295,20 @@ namespace Deque.Tests
                 Assert.AreEqual(item, deque[i]);
             }
         }
+
+        [Test]
+        public void TestClear()
+        {
+            int loops = 100;
+            Deque<int> deque = new Deque<int>();
+            for (int i = loops - 1; i >= 0; i--)
+            {
+                deque.AddFront(i);
+            }
+
+            deque.Clear();
+            Assert.AreEqual(0, deque.Count);
+
+        }
     }
 }
