@@ -290,15 +290,15 @@ namespace System.Collections.Generic
             AddBack(item);
         }
 
-        private void ClearBuffer(int actualStart, int length)
+        private void ClearBuffer(int logicalIndex, int length)
         {
-            int offset = toBufferIndex(actualStart);
+            int offset = toBufferIndex(logicalIndex);
             if (offset + length > this.Capacity)
             {
                 int len = this.Capacity - offset;
                 Array.Clear(this.buffer, offset, len);
 
-                len = toBufferIndex(length);
+                len = toBufferIndex(logicalIndex + length);
                 Array.Clear(this.buffer, 0, len);
             }
             else
